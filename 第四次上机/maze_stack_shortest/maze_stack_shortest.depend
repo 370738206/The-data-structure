@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1604823207 source:d:\software\profressional_software\codeblocks-20.03\codeblocks_code\maze_stack_shortest\main.c
+	<stdio.h>
+	<windows.h>
+
+1604835396 source:c:\users\liyemin\desktop\第四次上机\maze_stack_shortest\main.c
+	<stdio.h>
+	<windows.h>
+

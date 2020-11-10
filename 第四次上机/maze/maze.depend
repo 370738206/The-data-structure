@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1604814948 source:d:\software\profressional_software\codeblocks-20.03\codeblocks_code\maze\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
