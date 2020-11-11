@@ -1,0 +1,125 @@
+https://blog.csdn.net/Markin2333/article/details/81205482?biz_id=102
+/*
+* Created by Microsoft Visual Studio 2013
+* @author: Teresa
+* @date: 2017-10-24
+* @description: 二叉树遍层序遍历
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+/*函数状态码*/
+#define TRUE 1	//成功
+#define OK 1
+#define FALSE 0	//失败
+#define ERROR 0	//错误
+#define INFEASIBLE -1	//不可行的
+#define OVERFLOW -2 	//溢出
+#define MAXSIZE 100
+
+typedef int Status;	//函数的返回值类型
+typedef char TElemType;
+
+/* 二叉链表表示的二叉树 */
+typedef struct BiTNode
+{
+    TElemType data;
+    struct BiTNode *lchild, *rchild;
+} BiTNode, *BiTree;
+
+typedef BiTree QElemType;
+
+typedef struct
+{
+    QElemType data[MAXSIZE];
+    int front, rear;     // 分别存放队头和队尾的位置
+} SqQueue, *SqQueuePtr;
+
+
+Status PrintElement(TElemType e){
+    putchar(e);
+    return OK;
+}
+
+//按先序次序输入二叉树中结点的值(一个字符)，空格字符表示空树，构造二叉链表表示的二叉树T。
+Status CreatBiTree(BiTree *T){
+    char ch;
+    scanf("%c", &ch);
+
+    //如果当前输入的字符为空格，则(*T)指向空树。
+    if (ch == ' '){
+        (*T) = NULL;
+    }
+    else{
+        if (!((*T) = (BiTree)malloc(sizeof(BiTNode))))
+            exit(OVERFLOW);
+        (*T)->data = ch;             //生成根结点
+        CreatBiTree(&((*T)->lchild));    //构造左子树
+        CreatBiTree(&((*T)->rchild));    //构造右子树
+    }
+    return OK;
+}
+
+//初始化队列
+void InitQueue(SqQueuePtr Q)  {
+    Q->front = 0;
+    Q->rear = 0;
+}
+
+//判断队列空
+int QEmpty(SqQueuePtr Q)  {
+    return (Q->front == Q->rear);
+}
+
+//判断队列满
+int QFull(SqQueuePtr Q){
+    return ((Q->rear + 1) % MAXSIZE == Q->front);
+}
+
+//从队尾入队列
+Status EnQueue(SqQueuePtr Q, QElemType e){
+    if(QFull(Q))   //队列满则返回错误
+        return ERROR;
+
+    Q->data[Q->rear++] = e;
+    return OK;
+}
+
+//从队头出队列
+Status DeQueue(SqQueuePtr Q, QElemType *e){
+    if(QEmpty(Q))
+        return ERROR;   //队列空则返回错误
+
+    *e = Q->data[Q->front++];
+    return OK;
+}
+
+//层序遍历二叉树
+void LevelTraverse(BiTree T,Status(*Visit)(TElemType e))  {
+    SqQueuePtr queue;
+    queue = (SqQueuePtr)malloc(sizeof(SqQueue));
+    InitQueue(queue);
+
+    /*将二叉树的根结点入队列
+     *将队头元素出队列
+     *并将队头元素的左子树的根结点（非空）右子树的根结点（非空）分别入队列
+     *重复 直至队列中没有元素
+     */
+    EnQueue(queue, T);
+    QElemType tmp;
+    while(!QEmpty(queue)) {
+        DeQueue(queue, &tmp);
+        Visit(tmp->data);
+        if(tmp->lchild)
+            EnQueue(queue, tmp->lchild);
+        if(tmp->rchild)
+            EnQueue(queue, tmp->rchild);
+    }
+}
+
+int main(){
+    BiTree T;
+    CreatBiTree(&T);
+    LevelTraverse(T,PrintElement);
+    return 0;
+}
